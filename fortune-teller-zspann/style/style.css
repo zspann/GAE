@@ -1,0 +1,11 @@
+
+@font-face {
+   font-family: Yatra One;
+   src: "https://fonts.googleapis.com/css?family=Yatra+One";
+}
+
+h1 {
+  font-family: Yatra One;
+  font-weight: 100;
+  font-size: 5em;
+}

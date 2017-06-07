@@ -16,23 +16,41 @@
 #
 import webapp2
 import random
+import jinja2
+import os
+import urllib
+
+from google.appengine.api import users
+from google.appengine.ext import ndb
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.write('Hello world!')
-class TimeHandler(webapp2.RequestHandler):
+class FormHandler(webapp2.RequestHandler):
     def get(self):
-        i = 1
-        self.response.write("You've visited this page " + str(i) + " times.")
-        i += 1
+        fortune_form = JINJA_ENVIRONMENT.get_template("templates/form.html")
+        self.response.write(fortune_form.render())
 class FortuneHandler(webapp2.RequestHandler):
     def get(self):
-        i = random.randint(0, 4)
-        fortune_list = ["You will develop great skills.", "You will accomplish great but terrible things.", "You will encounter great people.", "You will destroy the entire world.", "You will be left entirely alone."]
-        self.response.write(fortune_list[random.randint(0, len(fortune_list))])
+        name = "Zack"
+        location = "Seattle"
+        f_list = [" will be left forever alone.", " will find everlasting love.", " will be lost to the end of time.", " will always be around people.", " will never leave the house."]
+        fortune = f_list[random.randint(0, len(f_list)-1)]
+        fortune_response = JINJA_ENVIRONMENT.get_template("templates/fortune.html")
+        self.response.write(fortune_response.render({
+        "form_name" : name,
+        "form_location" : location,
+        "random_fortune" : fortune,
+        }))
+
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/timesaver', TimeHandler),
+    ('/form', FormHandler),
     ('/fortune', FortuneHandler)
 ], debug=True)
